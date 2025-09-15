@@ -1,5 +1,7 @@
 import os
-from pydantic import BaseSettings
+from dotenv import load_dotenv
+load_dotenv()
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     GOOGLE_CLOUD_PROJECT: str = os.getenv("GOOGLE_CLOUD_PROJECT")
