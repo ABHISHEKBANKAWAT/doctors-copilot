@@ -1,0 +1,20 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Credentials
+credential.json
+credentials.json
+**/credentials/**
+*.key
+*.pem
+
+# API keys
+api-keys.json
+secrets.json
+
+.venv/
+   .env
+   credentials.json
+   __pycache__/
