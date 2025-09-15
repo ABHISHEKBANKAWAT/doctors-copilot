@@ -11,3 +11,12 @@ sentence-transformers==2.2.2
 streamlit==1.28.2
 plotly==5.17.0
 scikit-learn==1.3.2
+
+
+# gcloud iam service-accounts create doctors-copilot-sa
+# gcloud projects add-iam-policy-binding doctors-copilot-2025 \
+#     --member="serviceAccount:doctors-copilot-sa@doctors-copilot-2025.iam.gserviceaccount.com" \
+#     --role="roles/bigquery.admin"
+
+# gcloud iam service-accounts keys create credentials.json \
+#     --iam-account=doctors-copilot-sa@doctors-copilot-2025.iam.gserviceaccount.com
