@@ -16,12 +16,23 @@ const Login = () => {
     try {
       setLoading(true);
       setError('');
+      
+      // Call the login function from auth context
       const success = await login(values.username, values.password);
+      
       if (success) {
-        navigate('/');
+        // Get the redirect path from location state or default to '/'
+        const from = location.state?.from?.pathname || '/';
+        message.success('Login successful!');
+        navigate(from, { replace: true });
+      } else {
+        throw new Error('Invalid username or password');
       }
     } catch (err) {
-      setError(err.message || 'Failed to log in');
+      console.error('Login error:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to log in';
+      setError(errorMessage);
+      message.error(errorMessage);
     } finally {
       setLoading(false);
     }

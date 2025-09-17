@@ -26,14 +26,23 @@ export const authAPI = {
 // Patient Insights API
 export const patientAPI = {
   getInsights: async (token, page = 1, perPage = 10) => {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Only add Authorization header if token is provided
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(
       `${API_BASE_URL}/patient_insights?page=${page}&per_page=${perPage}`,
       {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers,
+        credentials: 'include',  // Include cookies in the request
       }
     );
+    
     return handleResponse(response);
   },
 };

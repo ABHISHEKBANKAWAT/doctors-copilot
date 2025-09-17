@@ -24,14 +24,16 @@ const PatientInsights = () => {
       setLoading(true);
       setError(null);
       
-      const response = await patientAPI.getInsights(
-        localStorage.getItem('token'),
-        page,
-        pageSize
-      );
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
       
-      if (response.success) {
-        setInsights(response.data);
+      const response = await patientAPI.getInsights(token, page, pageSize);
+      
+      if (response && response.data) {
+        setInsights(Array.isArray(response.data) ? response.data : []);
         setPagination({
           ...pagination,
           current: page,
@@ -39,19 +41,24 @@ const PatientInsights = () => {
           total: response.pagination?.total_items || 0,
         });
         setLastUpdated(new Date());
+        return response;
       } else {
-        throw new Error(response.error || 'Failed to fetch patient insights');
+        throw new Error(response?.error || 'Failed to fetch patient insights');
       }
     } catch (err) {
       console.error('Error fetching insights:', err);
-      setError(`Failed to load patient insights: ${err.message}`);
-      message.error(`Failed to load patient insights: ${err.message}`);
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to load patient insights';
+      setError(errorMessage);
+      message.error(errorMessage);
       
       // If unauthorized, log out the user
-      if (err.message.includes('401')) {
+      if (err.response?.status === 401 || err.message.includes('401') || errorMessage.toLowerCase().includes('token')) {
         message.warning('Your session has expired. Please log in again.');
         logout();
       }
+      
+      // Return empty data to prevent further errors
+      return { data: [], pagination: { total_items: 0 } };
     } finally {
       setLoading(false);
     }
